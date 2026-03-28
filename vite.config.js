@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: 'public', // Beritahu Vite index.html ada kat sini
+  root: 'public', // Tempat index.html asal kau
   build: {
-    outDir: '../dist', // Hasil siap akan masuk folder dist kat luar
+    outDir: '../dist', // Hasil siap dihantar keluar ke folder dist
     emptyOutDir: true,
   }
 });
