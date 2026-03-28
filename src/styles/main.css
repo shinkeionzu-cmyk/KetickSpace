@@ -1,0 +1,54 @@
+/* Branding Warna KetickSpace */
+:root {
+    --bg-deep: #0d1117;
+    --bg-card: #161b22;
+    --border-dim: #30363d;
+    --neon-mint: #00ff95;
+    --text-main: #e6edf3;
+    --text-dim: #8b949e;
+}
+
+body {
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    -webkit-tap-highlight-color: transparent; /* Buang highlight biru kat phone */
+}
+
+/* Animasi Fade In bila tukar modul */
+main {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gaya Kad Modular */
+.ketick-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ketick-card:active {
+    transform: scale(0.95);
+    border-color: var(--neon-mint);
+    background-color: rgba(0, 255, 149, 0.05);
+}
+
+/* Scrollbar Minimalis untuk Phone */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-dim);
+    border-radius: 10px;
+}
+
+/* Neon Glow Effect */
+.neon-glow {
+    text-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+}
