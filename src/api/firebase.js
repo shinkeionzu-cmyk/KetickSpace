@@ -1,44 +1,39 @@
-// 1. Import SDK Firebase
 import { initializeApp } from "firebase/app";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { showToast } from "../utils/notifications.js";
 
-// 2. LOGIK RAHSIA: Pilih Config (GitHub vs Local)
+// 1. Ambil config dari Environment Variable (GitHub Secrets)
+const envConfig = import.meta.env.FIREBASE_CONFIG;
+
+// 2. Logik pilihan: Kalau ada envConfig guna yang tu, kalau tak ada baru cari fail local
 let firebaseConfig;
 
-try {
-    // Masa Deploy ke Firebase, GitHub Action akan suntik data ni
-    // Kita guna JSON.parse sebab Secret kita simpan dalam bentuk string JSON
-    firebaseConfig = JSON.parse(import.meta.env.FIREBASE_CONFIG);
-} catch (e) {
-    // Kalau gagal (masa kat Acode), dia akan guna fail local config.js
-    // Kita gunakan 'await import' secara dinamik
-    const module = await import("./config.js");
-    firebaseConfig = module.firebaseConfig;
+if (envConfig) {
+    // Masa Live di Firebase
+    firebaseConfig = JSON.parse(envConfig);
+} else {
+    // Masa Coding kat Phone (Acode)
+    // Kita guna 'apiKey' sebagai petunjuk config local
+    // Nota: Pastikan config.js kau export const firebaseConfig
+    firebaseConfig = {
+        apiKey: "KOD_RAHSIA_LOCAL_KAU", // Letak string kosong pun takpe, asalkan tak error
+        authDomain: "ketickspace.firebaseapp.com",
+        projectId: "ketickspace",
+        storageBucket: "ketickspace.firebasestorage.app",
+        messagingSenderId: "353141111713",
+        appId: "1:353141111713:web:757041a3d90f23075c3f3d"
+    };
 }
 
-// 4. Inisialisasi Firebase
+// 3. Inisialisasi
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// 5. Aktifkan Offline Persistence
 enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code == 'failed-precondition') {
-        console.warn("Offline persistence failed: Multiple tabs open.");
-    } else if (err.code == 'unimplemented') {
-        console.warn("Offline persistence not supported by browser.");
-    }
-});
-
-// 6. Pemantau Status Rangkaian
-window.addEventListener('online', () => {
-    showToast("Sambungan dipulihkan!", "success");
-});
-
-window.addEventListener('offline', () => {
-    showToast("Anda sedang offline.", "error");
+    if (err.code == 'failed-precondition') console.warn("Multiple tabs open.");
+    else if (err.code == 'unimplemented') console.warn("Browser not supported.");
 });
 
 export { db, auth };
